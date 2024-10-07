@@ -155,7 +155,7 @@ where
         match self.inner.send_transaction(tx.clone(), block).await {
             Ok(tx_hash) => Ok(tx_hash),
             Err(err) => {
-                tracing::warn!("tx first send error with nonce: {}", nonce);
+                tracing::warn!("tx first send error: {} with nonce: {}", err, nonce);
                 let nonce = self.get_transaction_count(self.address, block).await?;
                 if nonce != self.nonce.load(Ordering::SeqCst).into() {
                     // try re-submitting the transaction with the correct nonce if there
