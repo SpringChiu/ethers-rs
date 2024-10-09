@@ -149,15 +149,15 @@ where
         if tx.nonce().is_none() {
             tx.set_nonce(self.get_transaction_count_with_manager(block).await?);
         }
-        let nonce = tx.nonce().cloned().unwrap_or_default().as_u64();
-        tracing::info!("tx send with nonce: {}", nonce);
+        let sent_nonce = tx.nonce().cloned().unwrap_or_default().as_u128();
+        tracing::info!("tx send with nonce: {}", sent_nonce);
 
         match self.inner.send_transaction(tx.clone(), block).await {
             Ok(tx_hash) => Ok(tx_hash),
             Err(err) => {
-                tracing::warn!("tx first send error: {} with nonce: {}", err, nonce);
+                tracing::warn!("tx first send error: {} with nonce: {}", err, sent_nonce);
                 let nonce = self.get_transaction_count(self.address, block).await?;
-                if nonce != self.nonce.load(Ordering::SeqCst).into() {
+                if nonce.as_u128() != sent_nonce {
                     // try re-submitting the transaction with the correct nonce if there
                     // was a nonce mismatch
                     self.nonce.store(nonce.as_u64(), Ordering::SeqCst);

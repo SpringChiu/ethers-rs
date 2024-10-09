@@ -577,9 +577,7 @@ impl<P: JsonRpcClient> Middleware for Provider<P> {
         tx: Bytes,
     ) -> Result<PendingTransaction<'a, P>, ProviderError> {
         let rlp = utils::serialize(&tx);
-        tracing::info!("provider start send tx");
         let tx_hash = self.request("eth_sendRawTransaction", [rlp]).await?;
-        tracing::info!("provider sent tx with tx_hash: {:?}", tx_hash);
         Ok(PendingTransaction::new(tx_hash, self))
     }
 
