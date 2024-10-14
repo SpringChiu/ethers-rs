@@ -287,7 +287,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let mut tx = tx.into();
 
         // fill any missing fields

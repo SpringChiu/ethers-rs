@@ -279,7 +279,7 @@ where
     pub async fn send_with_receipt(
         self,
     ) -> Result<(ContractInstance<B, M>, TransactionReceipt), ContractError<M>> {
-        let pending_tx = self
+        let (_nonce, pending_tx) = self
             .client
             .borrow()
             .send_transaction(self.tx, Some(self.block.into()))

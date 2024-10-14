@@ -37,6 +37,10 @@ where
         nonce.into()
     }
 
+    pub fn last_sent(&self) -> U256 {
+        (self.nonce.load(Ordering::Relaxed) - 1).into()
+    }
+
     pub async fn initialize_nonce(
         &self,
         block: Option<BlockId>,
@@ -143,7 +147,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let mut tx = tx.into();
 
         if tx.nonce().is_none() {
@@ -153,7 +157,7 @@ where
         tracing::info!("tx send with nonce: {}", sent_nonce);
 
         match self.inner.send_transaction(tx.clone(), block).await {
-            Ok(tx_hash) => Ok(tx_hash),
+            Ok(tx_hash) => Ok((sent_nonce.into(), tx_hash)),
             Err(err) => {
                 tracing::warn!("tx first send error: {} with nonce: {}", err, sent_nonce);
                 let nonce = self.get_transaction_count(self.address, block).await?;
