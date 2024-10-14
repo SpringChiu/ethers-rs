@@ -564,12 +564,13 @@ impl<P: JsonRpcClient> Middleware for Provider<P> {
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, P>, ProviderError> {
+    ) -> Result<(U256, PendingTransaction<'_, P>), ProviderError> {
         let mut tx = tx.into();
+        let nonce = tx.nonce().cloned();
         self.fill_transaction(&mut tx, block).await?;
         let tx_hash = self.request("eth_sendTransaction", [tx]).await?;
 
-        Ok(PendingTransaction::new(tx_hash, self))
+        Ok((nonce.unwrap_or_default(), PendingTransaction::new(tx_hash, self)))
     }
 
     async fn send_raw_transaction<'a>(

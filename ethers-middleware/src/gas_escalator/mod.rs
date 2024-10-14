@@ -159,7 +159,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         self.inner.send_transaction(tx, block).await
     }
 }
@@ -172,7 +172,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, M::Provider>, GasEscalatorError<M>> {
+    ) -> Result<(U256, PendingTransaction<'_, M::Provider>), GasEscalatorError<M>> {
         let tx = tx.into();
 
         let pending_tx = self

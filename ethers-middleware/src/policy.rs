@@ -110,7 +110,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let tx = self
             .policy
             .ensure_can_send(tx.into())
