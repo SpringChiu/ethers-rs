@@ -112,6 +112,7 @@ impl DsProxy {
             .legacy()
             .send()
             .await?
+            .1
             .await?
             .ok_or(ContractError::ContractNotDeployed)?;
 

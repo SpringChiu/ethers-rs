@@ -159,7 +159,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         self.inner.send_transaction(tx, block).await
     }
 }
@@ -172,7 +172,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, M::Provider>, GasEscalatorError<M>> {
+    ) -> Result<(U256, PendingTransaction<'_, M::Provider>), GasEscalatorError<M>> {
         let tx = tx.into();
 
         let pending_tx = self
@@ -189,7 +189,7 @@ where
 
         // insert the tx in the pending txs
         let mut lock = self.txs.lock().await;
-        lock.push((*pending_tx, tx, Instant::now(), block));
+        lock.push((*pending_tx.1, tx, Instant::now(), block));
 
         Ok(pending_tx)
     }
@@ -319,7 +319,7 @@ impl<M, E> EscalationTask<M, E> {
                             // the tx hash will be different so we need to update it
                             match self.inner.send_transaction(replacement_tx.clone(), priority).await {
                                 Ok(new_tx_hash) => {
-                                    let new_tx_hash = *new_tx_hash;
+                                    let new_tx_hash = *new_tx_hash.1;
                                     tracing::trace!(
                                         old_tx_hash = ?tx_hash,
                                         new_tx_hash = ?new_tx_hash,

@@ -164,7 +164,7 @@ pub trait Middleware: Sync + Send + Debug {
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         self.inner().send_transaction(tx, block).await.map_err(MiddlewareError::from_err)
     }
 

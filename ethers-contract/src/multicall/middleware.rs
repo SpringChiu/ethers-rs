@@ -719,7 +719,7 @@ impl<M: Middleware> Multicall<M> {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn send(&self) -> Result<PendingTransaction<'_, M::Provider>, M> {
+    pub async fn send(&self) -> Result<(U256, PendingTransaction<'_, M::Provider>), M> {
         let tx = match self.version {
             MulticallVersion::Multicall => self.as_aggregate().tx,
             MulticallVersion::Multicall2 => self.as_try_aggregate().tx,

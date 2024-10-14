@@ -1,4 +1,4 @@
-use ethers_core::types::{transaction::eip2718::TypedTransaction, BlockId};
+use ethers_core::types::{transaction::eip2718::TypedTransaction, BlockId, U256};
 use ethers_providers::{Middleware, MiddlewareError, PendingTransaction};
 
 use async_trait::async_trait;
@@ -110,7 +110,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let tx = self
             .policy
             .ensure_can_send(tx.into())

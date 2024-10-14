@@ -83,9 +83,9 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let mut tx: TypedTransaction = tx.into();
-
+        let nonce = tx.nonce().cloned();
         let curr_gas: U256 = match tx.gas() {
             Some(gas) => gas.to_owned(),
             None => Err(GasMiddlewareError::NoGasSetForTransaction)?,

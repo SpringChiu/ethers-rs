@@ -287,8 +287,9 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let mut tx = tx.into();
+        let nonce = tx.nonce().cloned().unwrap_or_default();
 
         // fill any missing fields
         self.fill_transaction(&mut tx, block).await?;
@@ -310,6 +311,7 @@ where
         self.inner
             .send_raw_transaction(signed_tx)
             .await
+            .map(|r| (nonce, r))
             .map_err(SignerMiddlewareError::MiddlewareError)
     }
 

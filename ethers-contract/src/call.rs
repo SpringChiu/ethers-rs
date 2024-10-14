@@ -323,7 +323,7 @@ where
     }
 
     /// Signs and broadcasts the provided transaction
-    pub async fn send(&self) -> Result<PendingTransaction<'_, M::Provider>, ContractError<M>> {
+    pub async fn send(&self) -> Result<(U256, PendingTransaction<'_, M::Provider>), ContractError<M>> {
         self.client
             .borrow()
             .send_transaction(self.tx.clone(), self.block)

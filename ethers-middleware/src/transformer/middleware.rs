@@ -67,7 +67,7 @@ where
         &self,
         tx: Tx,
         block: Option<BlockId>,
-    ) -> Result<PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, PendingTransaction<'_, Self::Provider>), Self::Error> {
         let mut tx = tx.into();
 
         // construct the appropriate proxy tx.

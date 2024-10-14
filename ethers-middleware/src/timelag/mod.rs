@@ -130,7 +130,7 @@ where
         &self,
         tx: T,
         block: Option<BlockId>,
-    ) -> Result<ethers_providers::PendingTransaction<'_, Self::Provider>, Self::Error> {
+    ) -> Result<(U256, ethers_providers::PendingTransaction<'_, Self::Provider>), Self::Error> {
         self.inner()
             .send_transaction(tx, block)
             .await
