@@ -164,7 +164,7 @@ where
                 if nonce.as_u128() != sent_nonce {
                     // try re-submitting the transaction with the correct nonce if there
                     // was a nonce mismatch
-                    self.nonce.store(nonce.as_u64(), Ordering::SeqCst);
+                    self.nonce.store(nonce.as_u64() + 1, Ordering::SeqCst);
                     tx.set_nonce(nonce);
                     tracing::warn!("tx retry send with nonce: {}", nonce);
                     self.inner.send_transaction(tx, block).await.map_err(MiddlewareError::from_err)
